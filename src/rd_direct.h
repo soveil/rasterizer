@@ -1,0 +1,84 @@
+#ifndef RD_ENGINE_DIRECT_H
+#define RD_ENGINE_DIRECT_H
+
+#include <string>
+
+#include "rd_enginebase.h"
+using std::string;
+
+// This is a rendering engine that renders directly to the image buffer as
+// primitives come in.  A depth buffer is obviously needed.  Transparency is
+// not properly handled.
+
+class REDirect : public RenderEngine {
+ public:
+  // Only methods inherited from the RenderEngine class should be added here,
+  // as needed.
+  // NOTE: methods MUST be added in the same order as presented in
+  // rd_enginebase.h
+
+  /**********************   General functions  *******************************/
+
+  int rd_display(const string& name, const string& type, const string& mode);
+  int rd_format(int xresolution, int yresolution);
+
+  int rd_world_begin(void);
+  int rd_world_end(void);
+
+  int rd_frame_begin(int frame_no);
+  int rd_frame_end(void);
+
+  int rd_option_bool(const string& name, bool flag);
+
+  /**********************   Camera  ******************************************/
+
+  int rd_camera_eye(const float eyepoint[3]);
+  int rd_camera_at(const float atpoint[3]);
+  int rd_camera_up(const float up[3]);
+  int rd_camera_fov(float fov);
+  int rd_clipping(float znear, float zfar);
+
+  /**********************   Transformations **********************************/
+
+  int rd_translate(const float offset[3]);
+  int rd_scale(const float scale_factor[3]);
+  int rd_rotate_xy(float angle);
+  int rd_rotate_yz(float angle);
+  int rd_rotate_zx(float angle);
+
+  int rd_xform_push(void);
+  int rd_xform_pop(void);
+
+  /**********************   Geometric Objects  *******************************/
+
+  int rd_circle(const float center[3], float radius);
+  int rd_cone(float height, float radius, float thetamax);
+  int rd_cube(void);
+  int rd_cylinder(float radius, float zmin, float zmax, float thetamax);
+  int rd_disk(float height, float radius, float theta);
+  int rd_line(const float start[3], const float end[3]);
+  int rd_point(const float p[3]);
+  int rd_pointset(const string& vertex_type, int nvertex, const vector<float>& vertex);
+  int rd_polyset(const string& vertex_type, int nvertex, const vector<float>& vertex, int nface, const vector<int>& face);
+  int rd_sphere(float radius, float zmin, float zmax, float thetamax);
+  void rd_vector(const float position[4], const float vector[3], const float color[3]);
+
+  /********************  Lighting & Shading  ***************************/
+
+  int rd_background(const float color[]);
+  int rd_color(const float color[]);
+  int rd_fill(const float seed_point[3]);
+  int rd_surface(const string & shader_type);
+
+  int rd_point_light(const float pos[3], const float color[], float intensity);
+  int rd_far_light(const float dir[3], const float color[], float intensity);
+  int rd_ambient_light(const float color[], float intensity);
+
+  int rd_k_ambient(float Ka);
+  int rd_k_diffuse(float Kd);
+  int rd_k_specular(float Ks);
+
+  int rd_specular_color(const float color[], int exponent);
+};
+
+#endif /* RD_ENGINE_DIRECT_H */
